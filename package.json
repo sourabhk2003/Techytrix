@@ -1,0 +1,12 @@
+{
+  "name": "ai-powered-lms-root",
+  "version": "1.0.0",
+  "description": "Root configuration to run MERN stack concurrently",
+  "scripts": {
+    "start": "concurrently \"npm start --prefix backend\" \"npm start --prefix frontend\"",
+    "dev": "concurrently \"npm run dev --prefix backend\" \"npm run dev --prefix frontend\""
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

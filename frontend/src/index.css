@@ -1,0 +1,211 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap');
+
+
+
+@import "tailwindcss";
+
+:root{
+    --font-DmSans:'DM Sans', system-ui, sans-serif;
+}
+
+*{
+    font-family: var(--font-DmSans);
+}
+
+
+
+
+
+/* navbar */
+.nav-modern {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 500;
+  
+  position: relative;
+}
+
+.nav-modern::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -6px;
+  width: 0%;
+  height: 2px;
+
+  background: #e11d48;
+  transition: width 0.3s;
+}
+
+.nav-modern:hover::after {
+  width: 100%;
+}
+
+.nav-login {
+  font-weight: 500;
+  color: #374151;
+}
+
+.nav-signup {
+  padding: 8px 16px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #fb7185, #f50039);
+  color: white;
+  font-weight: 500;
+}
+
+.icon-glass {
+  padding: 10px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.6);
+  backdrop-filter: blur(10px);
+}
+
+
+
+.mobile-modern {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 500;
+  color: #374151;
+}
+
+
+
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slide-down {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.4s ease-out;
+}
+
+.animate-slide-down {
+  animation: slide-down 0.50s ease-out;
+ 
+}
+
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+   
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slide-up {
+  animation: slide-up 0.35s ease-out;
+}
+
+ 
+     
+        
+          @keyframes trustMarquee {
+            from { transform: translateX(0); }
+            to { transform: translateX(-50%); }
+          }
+
+          .trust-marquee {
+            width: max-content;
+            animation: trustMarquee 5s linear infinite;
+          }
+
+          .trust-marquee:hover {
+            animation-play-state: paused;
+          } 
+        
+
+        
+          
+
+
+/* .marquee-wrapper {
+  overflow: hidden;
+  width: 100%;
+  position: relative;
+}
+
+.trust-track {
+  display: flex;
+  gap: 40px;
+  width: max-content;
+  animation: trustMarquee 35s linear infinite;
+}
+
+.trust-track:hover {
+  animation-play-state: paused;
+}
+
+@keyframes trustMarquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+} */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      /* SOCIAL COLORS */
+      
+          .social {
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: rgba(255,255,255,0.6);
+            transition: all 0.25s ease;
+            font-size: 18px;
+          }
+          .social.github:hover { color:#fff; border-color:#fff; }
+          .social.linkedin:hover { color:#0A66C2; border-color:#0A66C2; }
+          .social.twitter:hover { color:#fff; border-color:#fff; }
+          .social.instagram:hover { color:#E4405F; border-color:#E4405F; }
+          .social.whatsapp:hover { color:#25D366; border-color:#25D366; }
+       
+      
+
+ /* index.css mein daal */
+html.lenis, html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important; /* Force browser to stop native smooth scroll */
+}
+
+/* Optional: Pura content GPU pe force karne ke liye */
+#root {
+  width: 100%;
+  min-height: 100vh;
+  overflow: hidden; /* Extra scrollbars avoid karne ke liye */
+}

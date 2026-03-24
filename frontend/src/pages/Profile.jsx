@@ -1,0 +1,203 @@
+import React from "react";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { FaArrowLeftLong } from "react-icons/fa6";
+import { FaPlayCircle } from "react-icons/fa";
+
+const Profile = () => {
+  const { userData } = useSelector(state => state.user);
+  const { courseData } = useSelector(state => state.course);
+
+  const isEducator = userData?.role === "educator";
+
+  const createdCoursesCount = courseData?.courses?.filter(
+    course => course.creator?.toString() === userData?._id?.toString()
+  ).length || 0;
+
+  const enrolledCoursesCount = userData?.enrolledCourses?.length || 0;
+
+  const navigate = useNavigate();
+  const [metrics, setMetrics] = React.useState(null);
+  const [recentActivity, setRecentActivity] = React.useState([]);
+  const baseUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:8000";
+
+  React.useEffect(() => {
+    if (!isEducator) {
+      fetch(`${baseUrl}/api/user/progress`, { credentials: 'include' })
+        .then(res => res.json())
+        .then(data => setMetrics(data))
+        .catch(console.error);
+
+      fetch(`${baseUrl}/api/user/lecture-history`, { credentials: 'include' })
+        .then(res => res.json())
+        .then(data => setRecentActivity(data.history || []))
+        .catch(console.error);
+    }
+  }, [isEducator]);
+
+  return (
+    <div className="min-h-screen bg-[#0b0f19] text-white relative overflow-hidden">
+      <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(#ffffff10_1px,transparent_1px)] [background-size:22px_22px]" />
+
+      <header className="fixed w-full top-0 z-30 bg-[#0b0f19]/80 backdrop-blur border-b border-white/10">
+        <div className="max-w-6xl mx-auto h-16 px-4 sm:px-6 flex items-center gap-4">
+          <button onClick={() => navigate("/")} className="text-white/60 hover:text-white transition">
+            <FaArrowLeftLong size={18} />
+          </button>
+          <span className="text-xs uppercase tracking-widest text-white/40">Profile</span>
+        </div>
+      </header>
+
+      <main className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 py-20 grid lg:grid-cols-2 gap-12">
+
+        {/* LEFT */}
+        <section className="space-y-8">
+          <div className="relative rounded-2xl border border-white/10 bg-white/5 p-6 sm:p-10 overflow-hidden">
+            <div className="absolute -top-24 -right-24 w-64 h-64 bg-white/10 blur-3xl rounded-full" />
+            <div className="relative flex items-center gap-5">
+              {userData?.photoUrl ? (
+                <img
+                  src={`${userData.photoUrl}?t=${Date.now()}`}
+                  alt="profile"
+                  className="w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover"
+                />
+              ) : (
+                <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-white text-black flex items-center justify-center text-3xl font-semibold shrink-0">
+                  {userData?.name?.charAt(0).toUpperCase()}
+                </div>
+              )}
+              <div className="min-w-0">
+                <h1 className="text-xl sm:text-2xl font-semibold tracking-tight truncate">{userData?.name}</h1>
+                <div className="mt-2 flex items-center gap-3 flex-wrap">
+                  <span className="px-3 py-1 rounded-full text-[10px] uppercase tracking-widest bg-white/10 border border-white/20 text-white/80">
+                    {userData?.role}
+                  </span>
+                  <span className="text-xs text-white/40">Techytrix Member</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
+            <span className="block text-[10px] uppercase tracking-widest text-white/40 mb-3">About</span>
+            <div className="text-sm sm:text-base text-white/75 leading-relaxed max-w-xl">
+              {userData?.description?.trim()
+                ? userData.description
+                : "This profile is part of Techytrix — a focused learning system designed for deep skill growth and long-term mastery."}
+            </div>
+          </div>
+
+          <div>
+            <button
+              onClick={() => navigate("/editprofile")}
+              className="inline-flex items-center justify-center px-8 py-3 rounded-full border border-white/20 hover:border-white/40 transition text-sm"
+            >
+              Edit Profile
+            </button>
+          </div>
+        </section>
+
+        {/* RIGHT */}
+        <aside className="space-y-8">
+          <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
+            <span className="block text-[10px] uppercase tracking-widest text-white/40 mb-5">Account Overview</span>
+            <div className="space-y-5">
+              <div>
+                <span className="block text-xs text-white/40">Email</span>
+                <div className="mt-1 text-sm sm:text-base break-all">{userData?.email}</div>
+              </div>
+              <div className="h-px bg-white/10" />
+              <div className="flex items-center justify-between">
+                <div>
+                  <span className="block text-xs text-white/40">Role</span>
+                  <div className="mt-1 text-sm capitalize">{userData?.role}</div>
+                </div>
+                <span className="px-3 py-1.5 rounded-full text-[10px] bg-white/10 border border-white/20 text-white/70">Active</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
+            <span className="block text-[10px] uppercase tracking-widest text-white/40 mb-5">Learning Stats</span>
+            <div className="flex items-end justify-between">
+              <div>
+                <span className="block text-xs text-white/40">
+                  {isEducator ? "Courses Created" : "Courses Enrolled"}
+                </span>
+                <div className="mt-2 text-3xl font-semibold">
+                  {isEducator ? createdCoursesCount : enrolledCoursesCount}
+                </div>
+              </div>
+              <div className="text-xs text-white/40 max-w-[140px] text-right">
+                {isEducator ? "Manage your courses effectively" : "Your detailed learning progress"}
+              </div>
+            </div>
+
+            {!isEducator && metrics && (
+              <div className="mt-6 pt-6 border-t border-white/10 grid grid-cols-2 gap-4">
+                <div>
+                  <span className="block text-[10px] uppercase text-white/40">Quizzes Taken</span>
+                  <span className="text-xl font-bold text-blue-400">{metrics.totalQuizzesAttempted}</span>
+                </div>
+                <div>
+                  <span className="block text-[10px] uppercase text-white/40">Questions Solved</span>
+                  <span className="text-xl font-bold text-emerald-400">{metrics.totalQuestionsAnswered}</span>
+                </div>
+                <div>
+                  <span className="block text-[10px] uppercase text-white/40">Total Score</span>
+                  <span className="text-xl font-bold text-purple-400">{metrics.totalScore}</span>
+                </div>
+                <div>
+                  <span className="block text-[10px] uppercase text-white/40">Weighted Avg</span>
+                  <span className="text-xl font-bold text-yellow-400">{metrics.weightedAverage}%</span>
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div className="text-xs text-white/40 leading-relaxed max-w-sm">
+            You're part of the Techytrix ecosystem
+          </div>
+        </aside>
+      </main>
+
+      {/* Recent Activity - FULL WIDTH outside the grid */}
+      {!isEducator && (
+        <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 pb-16">
+          <section className="bg-white/5 border border-white/10 rounded-2xl p-6">
+            <h3 className="text-sm font-bold uppercase tracking-widest text-white/50 mb-5">📖 Recent Activity</h3>
+            {recentActivity.length === 0 ? (
+              <p className="text-sm text-white/30 italic">No activity yet. Open a lecture to start tracking your progress!</p>
+            ) : (
+              <div className="space-y-3 max-h-96 overflow-y-auto pr-1">
+                {recentActivity.map((item, i) => {
+                  const diff = Date.now() - new Date(item.viewedAt).getTime();
+                  const mins = Math.floor(diff / 60000);
+                  const timeAgo = mins < 60 ? `${mins}m ago` : mins < 1440 ? `${Math.floor(mins / 60)}h ago` : `${Math.floor(mins / 1440)}d ago`;
+                  return (
+                    <div key={i} className="flex items-center gap-4 bg-white/5 hover:bg-white/10 rounded-xl px-4 py-3 transition">
+                      <FaPlayCircle className="text-emerald-400 shrink-0" size={18} />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium truncate">{item.lectureTitle}</p>
+                        <p className="text-xs text-white/50 truncate">{item.courseTitle}</p>
+                      </div>
+                      <span className="text-xs text-white/30 shrink-0">{timeAgo}</span>
+                      <button
+                        onClick={() => navigate(`/viewlectures/${item.courseId}`)}
+                        className="ml-2 shrink-0 text-xs px-3 py-1.5 bg-emerald-500/20 hover:bg-emerald-500/40 text-emerald-300 rounded-lg border border-emerald-400/30 transition"
+                      >
+                        Resume
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </section>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default Profile;
