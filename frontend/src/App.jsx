@@ -29,6 +29,7 @@ import TakeQuiz from "./pages/student/TakeQuiz.jsx";
 import SearchWithAi from "./pages/SearchWithAi.jsx";
 
 import { Toaster } from "sonner";
+import ChatAssistant from "./component/ChatAssistant.jsx";
 
   // Use dynamic variable for production, fallback to local development
   export const serverUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:8000";
@@ -73,6 +74,7 @@ const App = () => {
     
   <Toaster richColors position="top-mid" />
       <ScrollToTop/>
+      <ChatAssistant />
       <Routes>
         <Route path="/" element={<Home />} />
        

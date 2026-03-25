@@ -76,23 +76,30 @@ export const searchWithAi = async (req, res) => {
     }
 
     
-    const keyword = await getCourseFromAI(input);
-   
+    const aiResponse = await getCourseFromAI(input);
+    let keyword = "Other";
+    let aiReply = "These are some courses that might interest you.";
 
-   
+    try {
+        const parsed = JSON.parse(aiResponse);
+        keyword = parsed.keyword || "Other";
+        aiReply = parsed.reply || aiReply;
+    } catch (e) {
+        keyword = aiResponse.trim();
+    }
+
     course = await Course.find({
       isPublished: true,
       $or: [
         { title: { $regex: keyword, $options: "i" } },
         { subTitle: { $regex: keyword, $options: "i" } },
-        { description: { $regex: keyword, $options: "i" } },
         { category: { $regex: keyword, $options: "i" } },
         { level: { $regex: keyword, $options: "i" } },
       ],
     });
 
     return res.status(200).json({
-      message: "Course found",
+      message: aiReply,
       course
     });
 

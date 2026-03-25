@@ -10,6 +10,7 @@ import courseRouter from './src/routes/course.route.js';
 import paymentRouter from './src/routes/payment.route.js';
 import reviewRouter from './src/routes/review.route.js';
 import quizRouter from './src/routes/quiz.route.js';
+import chatRouter from './src/routes/chat.route.js';
 
 dotenv.config();
 
@@ -45,6 +46,7 @@ app.use('/api/course',courseRouter)
 app.use('/api/order',paymentRouter)
 app.use('/api/review',reviewRouter)
 app.use('/api/quiz',quizRouter)
+app.use('/api/chat',chatRouter)
 
 
 

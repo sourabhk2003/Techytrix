@@ -108,11 +108,13 @@ const handleRecommendation = async (query) => {
     setListening(false);
 
     if (courses.length > 0) {
-      speak('These are the top courses I found for you');
-      toast.info('These are the top courses I found for you');
+      const aiReply = result?.data?.message || 'These are the top courses I found for you';
+      speak(aiReply);
+      toast.info(aiReply);
     } else {
-      speak('No courses found');
-      toast.error('No courses found');
+      const aiReply = result?.data?.message || 'No courses found';
+      speak(aiReply);
+      toast.error(aiReply);
     }
 
   } catch (error) {

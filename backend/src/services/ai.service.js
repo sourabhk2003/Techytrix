@@ -7,41 +7,42 @@ const ai = new GoogleGenAI({
 });
 
 export const getCourseFromAI = async (input) => {
-  const prompt = `You are an intelligent assistnat for an Techytrix LMS platform.
-a user will type any query about what they whant to leatn. Your task is to understand the intent and return one **most relevant keyword** from the following list of course catefories and levels:
+  const prompt = `You are a helpful AI assistant for the Techytrix LMS platform, behaving similarly to Gemini.
+A user is asking: "${input}"
 
+Your task is to:
+1. Generate a friendly, conversational response to the user. If they need support or to contact an educator, politely guide them to check course details or recommend finding relevant courses here. Act like a supportive mentor.
+2. Identify the most relevant single keyword from this list for course filtering:
+   - Web Development
+   - UI/UX
+   - App Development
+   - Ethical Hacking
+   - AI/ML
+   - Data Science
+   - Other
+   - Beginner
+   - Intermediate
+   - Advanced
 
-
-
-- Web Development
-- UI / UX Design
-- App Development
-- Ethical Hacking
-- AI/ML
-- Data Science
-- Other
-- Beginner
-- Intermediate
-- Advanced
-
-Only reply with one single keyword from the list above that best matches the query .Do not explain anything. No extra text.
-
-
-
-Query: ${input}
-
-
+You MUST return the response in **JSON format** with exactly this structure:
+{
+  "reply": "Your conversational response here.",
+  "keyword": "One keyword from list or 'Other'"
+}
 `;
 
   const response = await ai.models.generateContent({
     model: "gemini-2.5-flash",
     contents: prompt,
+    config: {
+      responseMimeType: "application/json"
+    }
   });
 
   const text =
   response.text ||
   response.candidates?.[0]?.content?.parts?.[0]?.text ||
-  "Other";
+  "{ \"reply\": \"No answers found\", \"keyword\": \"Other\" }";
 
 return text.trim();
 
