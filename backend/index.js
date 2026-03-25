@@ -29,23 +29,30 @@ app.use(cookieParser());
  })) */; 
  
 // CORS configuration
+const frontendUrl = process.env.FRONTEND_URL ? process.env.FRONTEND_URL.replace(/\/$/, "") : null;
 const allowedOrigins = [
   "http://localhost:5173", 
   "http://127.0.0.1:5173", 
-  process.env.FRONTEND_URL
+  frontendUrl
 ].filter(Boolean);
 
-console.log("Allowed Origins:", allowedOrigins);
+console.log("CORS DEBUG: Frontend URL from Env:", process.env.FRONTEND_URL);
+console.log("CORS DEBUG: Allowed Origins List:", allowedOrigins);
 
 app.use(
   cors({
     origin: function (origin, callback) {
       // Allow requests with no origin (like mobile apps or curl)
-      if (!origin) return callback(null, true);
-      if (allowedOrigins.indexOf(origin) !== -1 || allowedOrigins.includes(origin.replace(/\/$/, ""))) {
+      if (!origin) {
+        console.log("CORS DEBUG: No origin found, allowing request.");
+        return callback(null, true);
+      }
+      
+      const normalizedOrigin = origin.replace(/\/$/, "");
+      if (allowedOrigins.includes(normalizedOrigin)) {
         callback(null, true);
       } else {
-        console.error(`Origin ${origin} not allowed by CORS`);
+        console.error(`CORS ERROR: Origin ${origin} (normalized: ${normalizedOrigin}) is NOT in allowed list:`, allowedOrigins);
         callback(new Error('Not allowed by CORS'));
       }
     },
