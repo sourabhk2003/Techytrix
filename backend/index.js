@@ -28,13 +28,30 @@ app.use(cookieParser());
    credentials: true,
  })) */; 
  
+// CORS configuration
+const allowedOrigins = [
+  "http://localhost:5173", 
+  "http://127.0.0.1:5173", 
+  process.env.FRONTEND_URL
+].filter(Boolean);
 
- const allowedOrigins = ["http://localhost:5173", "http://127.0.0.1:5173", process.env.FRONTEND_URL].filter(Boolean);
+console.log("Allowed Origins:", allowedOrigins);
 
- app.use(
+app.use(
   cors({
-    origin: allowedOrigins,
+    origin: function (origin, callback) {
+      // Allow requests with no origin (like mobile apps or curl)
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.indexOf(origin) !== -1 || allowedOrigins.includes(origin.replace(/\/$/, ""))) {
+        callback(null, true);
+      } else {
+        console.error(`Origin ${origin} not allowed by CORS`);
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
     credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "Accept"]
   })
 );
  
